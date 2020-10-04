@@ -13,11 +13,45 @@ provider:
   memorySize: 256
   region: eu-central-1
   stage: ${opt:stage, 'dev'}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:PutItem
+      Resource:
+        - arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/AuctionsTable # We utilized serverless-pseudo-parameters here for dynamic usage of region, account id params
+
+resources:
+  # The "Resources" your "Functions" use.  Raw AWS CloudFormation goes in here.
+  # Resources are AWS infrastructure components which your Functions use such as:
+    # An AWS DynamoDB Table (e.g., for saving Users/Posts/Comments data)
+    # An AWS S3 Bucket (e.g., for saving images or files)
+    # An AWS SNS Topic (e.g., for sending messages asynchronously)
+    # Anything that can be defined in CloudFormation is supported by the Serverless Framework
+  Resources:
+    AuctionsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: AuctionsTable
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S # stands for 'String'
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
 
 functions:
   createAuction:
     handler: src/handlers/createAuction.handler
     events:
+      # Anything that triggers an AWS Lambda Function to execute is regarded by the Framework as an Event.
+      # Events are infrastructure events on AWS such as:
+        # An AWS API Gateway HTTP endpoint request (e.g., for a REST API)
+        # An AWS S3 bucket upload (e.g., for an image)
+        # A CloudWatch timer (e.g., run every 5 minutes)
+        # An AWS SNS topic (e.g., a message)
+        # A CloudWatch Alert (e.g., something happened)
+        # And more...
       - http:
           method: POST
           path: /auction

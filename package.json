@@ -1,7 +1,7 @@
 {
   "name": "auction-service",
   "version": "1.0.0",
-  "description": "Auction Service /w Serverless Framework",
+  "description": "Auction Service w/ Serverless Framework",
   "author": "Ömer Furkan Gençer",
   "license": "ISC",
   "husky": {
@@ -17,16 +17,17 @@
     "@babel/preset-env": "^7.11.5",
     "babel-loader": "^8.1.0",
     "babel-plugin-transform-runtime": "^6.23.0",
-    "eslint": "^7.8.0",
+    "eslint": "^7.10.0",
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-plugin-import": "^2.22.0",
-    "husky": "^4.2.5",
-    "lint-staged": "^10.2.13",
-    "serverless-bundle": "^3.0.0",
+    "husky": "^4.3.0",
+    "lint-staged": "^10.4.0",
+    "serverless-bundle": "^3.1.0",
     "serverless-pseudo-parameters": "^2.5.0",
     "webpack": "^4.44.1"
   },
   "dependencies": {
-    "aws-sdk": "^2.744.0"
+    "aws-sdk": "^2.744.0",
+    "uuid": "^8.3.0"
   }
 }
