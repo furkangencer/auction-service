@@ -13,12 +13,10 @@ provider:
   memorySize: 256
   region: eu-central-1
   stage: ${opt:stage, 'dev'}
+  environment:
+    AUCTIONS_TABLE_NAME: ${self:custom.AuctionsTable.name}
   iamRoleStatements:
-    - Effect: Allow
-      Action:
-        - dynamodb:PutItem
-      Resource:
-        - arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/AuctionsTable # We utilized serverless-pseudo-parameters here for dynamic usage of region, account id params
+    - ${file(iam/AuctionsTableIAM.yml):AuctionsTableIAM}
 
 resources:
   # The "Resources" your "Functions" use.  Raw AWS CloudFormation goes in here.
@@ -28,17 +26,7 @@ resources:
     # An AWS SNS Topic (e.g., for sending messages asynchronously)
     # Anything that can be defined in CloudFormation is supported by the Serverless Framework
   Resources:
-    AuctionsTable:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        TableName: AuctionsTable
-        BillingMode: PAY_PER_REQUEST
-        AttributeDefinitions:
-          - AttributeName: id
-            AttributeType: S # stands for 'String'
-        KeySchema:
-          - AttributeName: id
-            KeyType: HASH
+    AuctionsTable: ${file(resources/AuctionsTable.yml):AuctionsTable}
 
 functions:
   createAuction:
@@ -55,3 +43,10 @@ functions:
       - http:
           method: POST
           path: /auction
+
+custom:
+  AuctionsTable:
+    name: !Ref AuctionsTable
+    arn: !GetAtt AuctionsTable.Arn
+  #bundle:
+    #linting: false
