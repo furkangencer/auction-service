@@ -1,0 +1,11 @@
+AuctionsTable:
+  Type: AWS::DynamoDB::Table
+  Properties:
+    TableName: AuctionsTable-${self:provider.stage} # We will have seperate tables for dev/prod environments: AuctionsTable-dev || AuctionsTable-prod
+    BillingMode: PAY_PER_REQUEST
+    AttributeDefinitions:
+      - AttributeName: id
+        AttributeType: S # stands for 'String'
+    KeySchema:
+      - AttributeName: id
+        KeyType: HASH
