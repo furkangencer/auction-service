@@ -8,11 +8,16 @@ const dynamodb = new AWS.DynamoDB.DocumentClient();
 // eslint-disable-next-line no-unused-vars
 const createAuction = async (event, context) => {
   const { title } = event.body;
+  const now = new Date();
+  const endDate = new Date();
+  endDate.setHours(now.getHours() + 1);
+
   const auction = {
     id: uuidv4(),
     title,
     status: 'OPEN',
-    createdAt: (new Date()).toISOString(),
+    createdAt: now.toISOString(),
+    endingAt: endDate.toISOString(),
     highestBid: {
       amount: 0,
     },
