@@ -1,7 +1,9 @@
 import AWS from 'aws-sdk';
 import createHttpError from 'http-errors';
+import validator from '@middy/validator';
 import commonMiddleware from '../lib/commonMiddleware';
 import { getAuctionById } from './getAuction';
+import placeBidSchema from '../lib/schemas/placeBidSchema';
 
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 
@@ -46,4 +48,7 @@ const placeBid = async (event, context) => {
   };
 };
 // eslint-disable-next-line import/prefer-default-export
-export const handler = commonMiddleware(placeBid);
+export const handler = commonMiddleware(placeBid)
+  .use(validator({
+    inputSchema: placeBidSchema,
+  }));
