@@ -10,6 +10,7 @@ const dynamodb = new AWS.DynamoDB.DocumentClient();
 // eslint-disable-next-line no-unused-vars
 const createAuction = async (event, context) => {
   const { title } = event.body;
+  const { email } = event.requestContext.authorizer;
   const now = new Date();
   const endDate = new Date();
   endDate.setHours(now.getHours() + 1);
@@ -23,6 +24,7 @@ const createAuction = async (event, context) => {
     highestBid: {
       amount: 0,
     },
+    seller: email,
   };
 
   try {
