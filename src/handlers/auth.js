@@ -38,7 +38,7 @@ export async function handler(event, context) {
       context: claims,
     };
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw new Error('Unauthorized');
   }
 }
