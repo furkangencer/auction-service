@@ -88,6 +88,7 @@ functions:
       - http:
           method: PATCH
           path: /auction/{id}/picture
+          cors: true
           authorizer: auth
 
   processAuctions:
