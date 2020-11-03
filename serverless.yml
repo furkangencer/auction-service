@@ -15,9 +15,11 @@ provider:
     AUCTIONS_TABLE_NAME: ${self:custom.AuctionsTable.name}
     AUTH0_PUBLIC_KEY: ${file(secret.pem)}
     MAIL_QUEUE_URL: ${self:custom.MailQueue.url}
+    AUCTIONS_BUCKET_NAME: ${self:custom.AuctionsBucket.name}
   iamRoleStatements:
     - ${file(iam/AuctionsTableIAM.yml):AuctionsTableIAM}
     - ${file(iam/MailQueueIAM.yml):MailQueueIAM}
+    - ${file(iam/AuctionsBucketIAM.yml):AuctionsBucketIAM}
 
 resources:
   # The "Resources" your "Functions" use.  Raw AWS CloudFormation goes in here.
@@ -28,6 +30,8 @@ resources:
     # Anything that can be defined in CloudFormation is supported by the Serverless Framework
   Resources:
     AuctionsTable: ${file(resources/AuctionsTable.yml):AuctionsTable}
+    AuctionsBucket: ${file(resources/AuctionsBucket.yml):AuctionsBucket}
+    AuctionsBucketPolicy: ${file(resources/AuctionsBucket.yml):AuctionsBucketPolicy}
 
 functions:
   auth:
@@ -78,6 +82,14 @@ functions:
           cors: true
           authorizer: auth
 
+  uploadAuctionPicture:
+    handler: src/handlers/uploadAuctionPicture.handler
+    events:
+      - http:
+          method: PATCH
+          path: /auction/{id}/picture
+          authorizer: auth
+
   processAuctions:
     handler: src/handlers/processAuctions.handler
     #events:
@@ -92,5 +104,7 @@ custom:
     # For more info: https://github.com/petrucci53/notification-service
     arn: ${cf:notification-service-${self:provider.stage}.MailQueueArn}
     url: ${cf:notification-service-${self:provider.stage}.MailQueueUrl}
+  AuctionsBucket:
+    name: auctions-bucket-5e467e98-${self:provider.stage}
   bundle:
     linting: false
